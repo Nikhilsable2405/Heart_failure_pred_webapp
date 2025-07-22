@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heart Failure Prediction</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: linear-gradient(120deg, #f0f9ff, #cbebff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            max-width: 650px;
+            margin: auto;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        input.form-control {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: all 0.3s ease-in-out;
+        }
+
+        input.form-control:focus {
+            border-color: #0077b6;
+            box-shadow: 0 0 8px rgba(0,119,182,0.2);
+        }
+
+        button.btn {
+            background-color: #0077b6;
+            border: none;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button.btn:hover {
+            background-color: #005f87;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .alert {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Heart Failure Risk Prediction System</h2>
+    <p>Enter the patient data below to predict survival likelihood</p>
+</div>
+
+<div class="container">
+    <form action="/predict" method="post">
+
+        <!-- Form Fields -->
+        {% for label, name, min, max, step in [
+            ("Age", "age", 0, 120, 1),
+            ("Anaemia (0 = No, 1 = Yes)", "anaemia", 0, 1, 1),
+            ("Creatinine Phosphokinase", "creatinine_phosphokinase", 0, "", 1),
+            ("Diabetes (0 = No, 1 = Yes)", "diabetes", 0, 1, 1),
+            ("Ejection Fraction", "ejection_fraction", 0, 100, 1),
+            ("High Blood Pressure (0 = No, 1 = Yes)", "high_blood_pressure", 0, 1, 1),
+            ("Platelets", "platelets", 0, "", "any"),
+            ("Serum Creatinine", "serum_creatinine", 0, "", "any"),
+            ("Serum Sodium", "serum_sodium", 0, "", 1),
+            ("Sex (0 = Female, 1 = Male)", "sex", 0, 1, 1),
+            ("Smoking (0 = No, 1 = Yes)", "smoking", 0, 1, 1),
+            ("Follow-up Time (in days)", "time", 0, "", 1)
+        ] %}
+        <div class="mb-3">
+            <label>{{ label }}:</label>
+            <input type="number" class="form-control" name="{{ name }}"
+                   min="{{ min }}" {% if max %} max="{{ max }}" {% endif %}
+                   step="{{ step }}" required>
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary w-100">Predict</button>
+    </form>
+
+    {% if prediction_text %}
+        <div class="alert {% if 'survive' in prediction_text %}alert-success{% else %}alert-danger{% endif %} mt-4 text-center">
+            {{ prediction_text }}
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
